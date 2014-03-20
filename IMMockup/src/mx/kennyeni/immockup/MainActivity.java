@@ -2,6 +2,8 @@ package mx.kennyeni.immockup;
 
 import java.util.ArrayList;
 
+
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -11,6 +13,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -36,6 +39,8 @@ public class MainActivity extends ListActivity {
 
 	private ParseUser currentUser;
 	
+	static final int MENU_SALIR = Menu.FIRST+1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,8 +64,10 @@ public class MainActivity extends ListActivity {
                 android.R.layout.simple_list_item_1, list);
         setListAdapter(mAdapter);
         
-        
-		Parse.initialize(this, "I7aW7NSedlwvNtAjZmQm9bcUT7FPSvl10SOauIey", "L3DPvfP1pTn7MvVzoOzQqBqwqHDp1DKGOFXj8dzt");
+        if(VariablesGlobales.counter){
+        	Parse.initialize(this, "I7aW7NSedlwvNtAjZmQm9bcUT7FPSvl10SOauIey", "L3DPvfP1pTn7MvVzoOzQqBqwqHDp1DKGOFXj8dzt");
+        	VariablesGlobales.counter = false;
+        }
 		login();
 		cargarConversaciones();
 	}
@@ -68,6 +75,8 @@ public class MainActivity extends ListActivity {
     @Override 
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Do something when a list item is clicked
+    	Intent intent = new Intent(this, Messages.class);
+		startActivity(intent);
     }
 	
 	
@@ -75,6 +84,8 @@ public class MainActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		menu.add("Salir");
+		
 		return true;
 	}
 	
@@ -92,6 +103,7 @@ public class MainActivity extends ListActivity {
 		if (currentUser == null){
 			Intent intent = new Intent(this, Login.class);
 		    startActivity(intent);
+		    this.finish();		   
 		}else{
 			String username = currentUser.getUsername();
 			PushService.subscribe(this, username, Messages.class);
@@ -102,5 +114,20 @@ public class MainActivity extends ListActivity {
 		Intent intent = new Intent(this, Messages.class);
 		startActivity(intent);
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case 0:
+	            ParseUser.logOut();
+	            Intent intent = new Intent(this,Login.class);	            
+				startActivity(intent);
+				this.finish();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+		
 
 }

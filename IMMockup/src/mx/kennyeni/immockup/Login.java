@@ -17,10 +17,13 @@ import com.parse.ParseUser;
 
 public class Login extends Activity {
 
+	private static Activity acti;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login);
+		setContentView(R.layout.login);	
+		acti = this;
 	}
 
 	public void abrirRegistro(View view){
@@ -39,6 +42,9 @@ public class Login extends Activity {
 			public void done(ParseUser user, ParseException e) {
 				if (user != null) {
 					sendToast("Login exitoso");
+					Intent intent = new Intent(acti,MainActivity.class);
+					startActivity(intent);
+					finish();
 				} else {
 					sendToast(e.getMessage());
 				}
@@ -52,5 +58,7 @@ public class Login extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	
 
 }

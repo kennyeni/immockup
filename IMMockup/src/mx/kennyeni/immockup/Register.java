@@ -1,5 +1,6 @@
 package mx.kennyeni.immockup;
 
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.Editable;
@@ -59,5 +60,7 @@ public class Register extends Activity {
 		user.signUpInBackground(callback);
 		
 	}
+	
+	
 
 }
