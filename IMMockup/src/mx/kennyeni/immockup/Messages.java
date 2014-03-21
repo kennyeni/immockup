@@ -30,6 +30,10 @@ public class Messages extends Activity {
 		currentUser = ParseUser.getCurrentUser();
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
+			/*if(destinatario.equals(currentUser)){
+				sendToast("No puedes hablar contigo mismo -.-");
+				this.finish();
+			}*/
 		    destinatario = extras.getString(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO);
 		}else{
 			this.finish();

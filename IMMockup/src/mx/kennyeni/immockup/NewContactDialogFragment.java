@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.EditText;
 
 public class NewContactDialogFragment extends DialogFragment {
     @Override
@@ -22,7 +24,10 @@ public class NewContactDialogFragment extends DialogFragment {
                .setPositiveButton(R.string.agregar, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int id) {
-                       // add the new contact
+                       // add the new contact                	  
+                	   Intent intent = new Intent(getActivity(), Messages.class);
+                   	   intent.putExtra(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO, ((EditText)((AlertDialog)dialog).findViewById(R.id.username)).getText() );
+                   	   startActivity(intent);
                    }
                })
                .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {

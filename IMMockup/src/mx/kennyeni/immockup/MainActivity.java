@@ -42,8 +42,7 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 
-public class MainActivity extends ListActivity implements NewContactDialogFragment.NoticeDialogListener {
-
+public class MainActivity extends ListActivity implements NewContactDialogFragment.NoticeDialogListener{
     // This is the Adapter being used to display the list's data
 	CustomParseQueryAdapter<ParseObject> adaptador;
 	HashSet<String> conversaciones = new HashSet<String>();
@@ -163,8 +162,8 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	    switch (item.getItemId()) {
 	    	case 0:
 	    	    DialogFragment newFragment = new NewContactDialogFragment();
-	    	   // newFragment.show(getSupportFragmentManager(), "newContact"); falta corregir esta linea
-	    	    break;
+	    	    newFragment.show(getFragmentManager(), "newContact"); 
+	    	    return true;
 	    	case 1:
 	            ParseUser.logOut();
 	            Intent intent = new Intent(this,Login.class);	            
@@ -173,8 +172,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
-	    }
-		return false;
+	    }		
 	}
 
 	@Override
@@ -188,6 +186,8 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 		
 
 }
