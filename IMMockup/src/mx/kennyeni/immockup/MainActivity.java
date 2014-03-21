@@ -11,6 +11,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -40,15 +41,13 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements NewContactDialogFragment.NoticeDialogListener {
 
     // This is the Adapter being used to display the list's data
 	ArrayAdapter mAdapter;
 	HashSet<String> conversaciones = new HashSet<String>();
 
-	private ParseUser currentUser;
-	
-	static final int MENU_SALIR = Menu.FIRST+1;
+	private ParseUser currentUser;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +92,8 @@ public class MainActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add("Salir");
-		
+		menu.add("Agregar contacto");
+		menu.add("Salir");		
 		return true;
 	}
 	
@@ -161,7 +160,11 @@ public class MainActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
-	        case 0:
+	    	case 0:
+	    	    DialogFragment newFragment = new NewContactDialogFragment();
+	    	   // newFragment.show(getSupportFragmentManager(), "newContact"); falta corregir esta linea
+    		
+	    	case 1:
 	            ParseUser.logOut();
 	            Intent intent = new Intent(this,Login.class);	            
 				startActivity(intent);
@@ -170,6 +173,18 @@ public class MainActivity extends ListActivity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
 	}
 		
 

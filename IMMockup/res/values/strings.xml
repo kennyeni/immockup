@@ -7,5 +7,9 @@
     <string name="login_password">Contraseña:</string>
     <string name="login_user">Usuario:</string>
     <string name="login_correo">E-Mail:</string>
+    <string name="name_new_contact">Nombre nuevo contacto</string>
+    <string name="mail_new_contact">Correo electronico</string>
+    <string name="agregar">Agregar</string>
+    <string name="cancelar">Cancelar</string>
 
 </resources>
