@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 
 
+
+
+import java.util.HashSet;
+import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -24,10 +29,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.app.LoaderManager;
 
+import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
@@ -36,6 +44,7 @@ public class MainActivity extends ListActivity {
 
     // This is the Adapter being used to display the list's data
 	ArrayAdapter mAdapter;
+	HashSet<String> conversaciones = new HashSet<String>();
 
 	private ParseUser currentUser;
 	
@@ -93,8 +102,42 @@ public class MainActivity extends ListActivity {
 		Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
 	}
 	
+	FindCallback<ParseObject> emisorCallback = new FindCallback<ParseObject>() {
+		
+		@Override
+		public void done(List<ParseObject> objects, ParseException e) {
+			if (e != null){
+				sendToast(e.getMessage());
+			}else{
+				for(ParseObject destinatario : objects){
+					conversaciones.add(destinatario.getString("Destinatario"));
+				}
+			}
+			
+		}
+	};
+	
 	private void cargarConversaciones(){
-		mAdapter.add("Holi");
+		
+		// Adpatador con todas las conversaciones
+		ParseQueryAdapter.QueryFactory<ParseObject> factory = new ParseQueryAdapter.QueryFactory<ParseObject>() {
+					@Override
+					public ParseQuery<ParseObject> create() {
+						List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+						
+						ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Mensajes");
+						query1.whereEqualTo("Emisor", currentUser.getUsername());
+						queries.add(query1);
+						
+						ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Mensajes");
+						query2.whereEqualTo("Destinatario", currentUser.getUsername());
+						queries.add(query2);
+						
+						return ParseQuery.or(queries).orderByDescending("createdAt");
+					}
+				};
+		ParseQueryAdapter<ParseObject> adaptador = new ParseQueryAdapter<ParseObject>(this, factory);
+		
 	}
 	
 	private void login(){
