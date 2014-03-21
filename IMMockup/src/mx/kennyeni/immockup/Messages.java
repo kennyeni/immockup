@@ -20,7 +20,7 @@ import com.parse.SaveCallback;
 public class Messages extends Activity {
 
 	private ParseUser currentUser;
-	private String destinatario = "kennyeni";
+	private String destinatario;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,12 @@ public class Messages extends Activity {
 		setContentView(R.layout.messages);
 		ParseAnalytics.trackAppOpened(getIntent());
 		currentUser = ParseUser.getCurrentUser();
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+		    destinatario = extras.getString(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO);
+		}else{
+			this.finish();
+		}
 	}
 
 	@Override

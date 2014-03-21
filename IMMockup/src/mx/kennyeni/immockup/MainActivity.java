@@ -37,6 +37,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.ParseQueryAdapter.OnQueryLoadListener;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
@@ -44,7 +45,7 @@ import com.parse.SaveCallback;
 public class MainActivity extends ListActivity implements NewContactDialogFragment.NoticeDialogListener {
 
     // This is the Adapter being used to display the list's data
-	ArrayAdapter mAdapter;
+	CustomParseQueryAdapter<ParseObject> adaptador;
 	HashSet<String> conversaciones = new HashSet<String>();
 
 	private ParseUser currentUser;	
@@ -63,14 +64,6 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.addView(progressBar);
-
-       ArrayList<String> list = new ArrayList<String>();
-
-        // Create an empty adapter we will use to display the loaded data.
-        // We pass null for the cursor, then update it in onLoadFinished()
-        mAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, list);
-        setListAdapter(mAdapter);
         
         if(VariablesGlobales.counter){
         	Parse.initialize(this, "I7aW7NSedlwvNtAjZmQm9bcUT7FPSvl10SOauIey", "L3DPvfP1pTn7MvVzoOzQqBqwqHDp1DKGOFXj8dzt");
@@ -84,6 +77,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Do something when a list item is clicked
     	Intent intent = new Intent(this, Messages.class);
+    	intent.putExtra(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO, adaptador.getItem(position).getString("Para"));
 		startActivity(intent);
     }
 	
@@ -117,25 +111,32 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	};
 	
 	private void cargarConversaciones(){
+		if (currentUser == null) return;
 		
 		// Adpatador con todas las conversaciones
 		ParseQueryAdapter.QueryFactory<ParseObject> factory = new ParseQueryAdapter.QueryFactory<ParseObject>() {
 					@Override
 					public ParseQuery<ParseObject> create() {
-						List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-						
-						ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Mensajes");
-						query1.whereEqualTo("Emisor", currentUser.getUsername());
-						queries.add(query1);
-						
-						ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Mensajes");
-						query2.whereEqualTo("Destinatario", currentUser.getUsername());
-						queries.add(query2);
-						
-						return ParseQuery.or(queries).orderByDescending("createdAt");
+						ParseQuery<ParseObject> query = ParseQuery.getQuery("Conversacion");
+						query.whereEqualTo("De", currentUser.getUsername());
+						query.orderByDescending("updatedAt");
+						return query;
 					}
 				};
-		ParseQueryAdapter<ParseObject> adaptador = new ParseQueryAdapter<ParseObject>(this, factory);
+		adaptador = new CustomParseQueryAdapter<ParseObject>(this, factory);
+		adaptador.setTextKey("Para");
+		
+		adaptador.addOnQueryLoadListener(new OnQueryLoadListener<ParseObject>() {
+			@Override
+			public void onLoaded(List<ParseObject> objects, Exception e) {
+				
+			}
+
+			@Override
+			public void onLoading() {}
+		});
+		
+		setListAdapter(adaptador);
 		
 	}
 	
@@ -163,7 +164,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	    	case 0:
 	    	    DialogFragment newFragment = new NewContactDialogFragment();
 	    	   // newFragment.show(getSupportFragmentManager(), "newContact"); falta corregir esta linea
-    		
+	    	    break;
 	    	case 1:
 	            ParseUser.logOut();
 	            Intent intent = new Intent(this,Login.class);	            
@@ -173,6 +174,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+		return false;
 	}
 
 	@Override
