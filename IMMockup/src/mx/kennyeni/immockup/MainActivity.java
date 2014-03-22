@@ -85,7 +85,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add("Agregar contacto");
+		menu.add("Agregar contacto");		
 		menu.add("Salir");		
 		return true;
 	}
@@ -159,20 +159,22 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
 	    switch (item.getItemId()) {
 	    	case 0:
 	    	    DialogFragment newFragment = new NewContactDialogFragment();
 	    	    newFragment.show(getFragmentManager(), "newContact"); 
-	    	    return true;
+	    	    break;
 	    	case 1:
 	            ParseUser.logOut();
 	            Intent intent = new Intent(this,Login.class);	            
 				startActivity(intent);
 				this.finish();
-	            return true;
+	            break;
 	        default:
 	            return super.onOptionsItemSelected(item);
-	    }		
+	    }	
+	    return true;
 	}
 
 	@Override

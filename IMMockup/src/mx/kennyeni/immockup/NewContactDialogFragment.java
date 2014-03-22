@@ -26,7 +26,7 @@ public class NewContactDialogFragment extends DialogFragment {
                    public void onClick(DialogInterface dialog, int id) {
                        // add the new contact                	  
                 	   Intent intent = new Intent(getActivity(), Messages.class);
-                   	   intent.putExtra(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO, ((EditText)((AlertDialog)dialog).findViewById(R.id.username)).getText() );
+                   	   intent.putExtra("STRING_I_NEED", ((EditText)((AlertDialog)dialog).findViewById(R.id.username)).getText().toString() );
                    	   startActivity(intent);
                    }
                })

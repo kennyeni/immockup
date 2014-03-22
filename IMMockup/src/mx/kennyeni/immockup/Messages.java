@@ -1,11 +1,15 @@
 package mx.kennyeni.immockup;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,8 +21,7 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 
-public class Messages extends Activity {
-
+public class Messages extends ListActivity {
 	private ParseUser currentUser;
 	private String destinatario;
 	
@@ -27,14 +30,14 @@ public class Messages extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.messages);
 		ParseAnalytics.trackAppOpened(getIntent());
-		currentUser = ParseUser.getCurrentUser();
+		currentUser = ParseUser.getCurrentUser();		
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			/*if(destinatario.equals(currentUser)){
-				sendToast("No puedes hablar contigo mismo -.-");
-				this.finish();
-			}*/
-		    destinatario = extras.getString(VariablesGlobales.INTENT_MENSAJE_DESTINATARIO);
+		if (extras != null) {			
+		    destinatario = extras.getString("STRING_I_NEED");
+		    if(destinatario.equals(currentUser)){
+		    	sendToast("No puedes hablar contigo mismo -.-");
+		    	this.finish();
+			}		    
 		}else{
 			this.finish();
 		}
@@ -53,14 +56,14 @@ public class Messages extends Activity {
 	}
 
 	
-	public void sendMessage(View v){
-		String str = ((EditText)findViewById(R.id.mesnajes_mensaje)).getText() + "";
-		
+	public void sendMessage(View v){		
+		String str = ((EditText)findViewById(R.id.mesnajes_mensaje)).getText() + "";		
 		ParseObject msg = new ParseObject("Mensajes");
 		msg.put("Emisor", currentUser.getUsername());
 		msg.put("Destinatario", destinatario);
 		msg.put("Mensaje", str);
 		msg.saveInBackground(messageCallback);
+		((EditText)findViewById(R.id.mesnajes_mensaje)).setText("");		
 	}
 	
 	SaveCallback messageCallback = new SaveCallback() {
@@ -86,4 +89,5 @@ public class Messages extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
 }
