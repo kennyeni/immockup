@@ -49,6 +49,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 
 	private ParseUser currentUser;	
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,6 +88,7 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 		getMenuInflater().inflate(R.menu.main, menu);
 		menu.add("Agregar contacto");		
 		menu.add("Salir");		
+		//System.out.println(menu.FIRST);
 		return true;
 	}
 	
@@ -159,19 +161,16 @@ public class MainActivity extends ListActivity implements NewContactDialogFragme
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-	    switch (item.getItemId()) {
-	    	case 0:
-	    	    DialogFragment newFragment = new NewContactDialogFragment();
-	    	    newFragment.show(getFragmentManager(), "newContact"); 
-	    	    break;
-	    	case 1:
-	            ParseUser.logOut();
-	            Intent intent = new Intent(this,Login.class);	            
-				startActivity(intent);
-				this.finish();
-	            break;
-	        default:
+		//System.out.println(item.getTitle());
+	    if(item.getTitle().toString().equals("Agregar contacto")) {	    	
+	    	DialogFragment newFragment = new NewContactDialogFragment();
+	    	newFragment.show(getFragmentManager(), "newContact"); 
+	    }else if (item.getTitle().toString().equals("Salir")){
+	    	ParseUser.logOut();
+	        Intent intent = new Intent(this,Login.class);	            
+			startActivity(intent);
+			this.finish();
+	    }else{
 	            return super.onOptionsItemSelected(item);
 	    }	
 	    return true;

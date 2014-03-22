@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.view.Menu;
@@ -47,7 +48,9 @@ public class Messages extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add("Salir");
+		menu.add("Agregar contacto");		
+		menu.add("Salir");		
+		//System.out.println(menu.FIRST);
 		return true;
 	}
 	
@@ -81,13 +84,19 @@ public class Messages extends ListActivity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case 0:
-	            ParseUser.logOut();
-	            return true;
-	        default:
+		//System.out.println(item.getTitle());
+	    if(item.getTitle().toString().equals("Agregar contacto")) {	    	
+	    	DialogFragment newFragment = new NewContactDialogFragment();
+	    	newFragment.show(getFragmentManager(), "newContact"); 
+	    }else if (item.getTitle().toString().equals("Salir")){
+	    	ParseUser.logOut();
+	        Intent intent = new Intent(this,Login.class);	            
+			startActivity(intent);
+			this.finish();
+	    }else{
 	            return super.onOptionsItemSelected(item);
-	    }
+	    }	
+	    return true;
 	}
 	
 }
